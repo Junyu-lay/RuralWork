@@ -15,10 +15,12 @@ export const TABLES = {
   VOTE_RECORDS: 'vote_records',
   EVALUATIONS: 'evaluations',
   LEAVE_REQUESTS: 'leave_requests',
-  TEAM_EVALUATIONS: 'team_evaluations',
+  WORK_TEAM_EVALUATIONS: 'work_team_evaluations',
   SCORE_RECORDS: 'score_records',
   SYSTEM_LOGS: 'system_logs',
-  NOTIFICATIONS: 'notifications'
+  NOTIFICATIONS: 'notifications',
+  WORK_TEAMS: 'work_teams',
+  TEAM_EVALUATION_ACTIVITIES: 'team_evaluation_activities'
 };
 
 // API 响应状态码

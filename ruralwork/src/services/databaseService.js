@@ -88,19 +88,34 @@ export const getAllUsers = async () => {
  */
 export const createUser = async (userData) => {
   try {
+    // 严格对齐表结构，过滤掉不存在的字段
+    const allowedFields = [
+      'phone',
+      'name',
+      'role',
+      'department',
+      'position',
+      'password_hash',
+      'is_active',
+      'total_score'
+    ];
+    const payload = Object.fromEntries(
+      Object.entries(userData).filter(([key]) => allowedFields.includes(key))
+    );
+
     const { data, error } = await supabase
       .from(TABLES.USERS)
-      .insert([userData])
+      .insert([payload])
       .select()
       .single();
 
     if (!error && data) {
       // 记录创建用户日志
-      await logUserAction(userData.created_by || data.id, 'create_user', 'users', { 
+      await logUserAction(data.id, 'create_user', 'users', { 
         new_user_id: data.id,
-        phone: userData.phone,
-        name: userData.name,
-        role: userData.role
+        phone: payload.phone,
+        name: payload.name,
+        role: payload.role
       });
     }
 
@@ -247,16 +262,14 @@ export const createLeaveRequest = async (leaveData) => {
  * @param {string} resource - 操作资源
  * @param {Object} metadata - 元数据
  */
-export const logUserAction = async (userId, action, resource, metadata = {}) => {
+export const logUserAction = async (userId, action, resource, _metadata = undefined) => {
   try {
+    // 只发送表中存在且稳定的字段，避免 metadata 引发 400
+    const payload = { user_id: userId, action, resource };
+
     await supabase
       .from(TABLES.SYSTEM_LOGS)
-      .insert([{
-        user_id: userId,
-        action,
-        resource,
-        metadata
-      }]);
+      .insert([payload]);
   } catch (error) {
     console.error('记录日志错误:', error);
     // 日志记录失败不应影响主要功能
@@ -341,10 +354,9 @@ export const updateData = async (table, id, updates) => {
       .from(table)
       .update(updates)
       .eq('id', id)
-      .select()
-      .single();
+      .select();
 
-    return { data, error };
+    return { data: data?.[0] || null, error };
   } catch (error) {
     console.error(`更新${table}数据错误:`, error);
     return { data: null, error: error.message };
@@ -368,5 +380,128 @@ export const deleteData = async (table, id) => {
   } catch (error) {
     console.error(`删除${table}数据错误:`, error);
     return { error: error.message };
+  }
+};
+
+// 工作队评分相关函数
+
+/**
+ * 创建工作队评分活动
+ * @param {Object} activityData - 活动数据
+ * @returns {Object} 创建结果
+ */
+export const createTeamEvaluationActivity = async (activityData) => {
+  try {
+    const { data, error } = await supabase
+      .from(TABLES.TEAM_EVALUATION_ACTIVITIES)
+      .insert([activityData])
+      .select()
+      .single();
+
+    return { data, error };
+  } catch (error) {
+    console.error('创建工作队评分活动错误:', error);
+    return { data: null, error: error.message };
+  }
+};
+
+/**
+ * 获取工作队评分活动
+ * @param {Object} filters - 过滤条件
+ * @returns {Object} 查询结果
+ */
+export const getTeamEvaluationActivities = async (filters = {}) => {
+  try {
+    let query = supabase
+      .from(TABLES.TEAM_EVALUATION_ACTIVITIES)
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    // 应用过滤条件
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        query = query.eq(key, value);
+      }
+    });
+
+    const { data, error } = await query;
+    return { data, error };
+  } catch (error) {
+    console.error('获取工作队评分活动错误:', error);
+    return { data: null, error: error.message };
+  }
+};
+
+/**
+ * 创建工作队评分
+ * @param {Object} evaluationData - 评分数据
+ * @returns {Object} 创建结果
+ */
+export const createTeamEvaluation = async (evaluationData) => {
+  try {
+    const { data, error } = await supabase
+      .from(TABLES.WORK_TEAM_EVALUATIONS)
+      .insert([evaluationData])
+      .select()
+      .single();
+
+    return { data, error };
+  } catch (error) {
+    console.error('创建工作队评分错误:', error);
+    return { data: null, error: error.message };
+  }
+};
+
+/**
+ * 获取工作队评分记录
+ * @param {Object} filters - 过滤条件
+ * @returns {Object} 查询结果
+ */
+export const getTeamEvaluations = async (filters = {}) => {
+  try {
+    let query = supabase
+      .from(TABLES.WORK_TEAM_EVALUATIONS)
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    // 应用过滤条件
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        query = query.eq(key, value);
+      }
+    });
+
+    const { data, error } = await query;
+    return { data, error };
+  } catch (error) {
+    console.error('获取工作队评分记录错误:', error);
+    return { data: null, error: error.message };
+  }
+};
+
+/**
+ * 获取工作队信息
+ * @param {Object} filters - 过滤条件
+ * @returns {Object} 查询结果
+ */
+export const getWorkTeams = async (filters = {}) => {
+  try {
+    let query = supabase
+      .from(TABLES.WORK_TEAMS)
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    // 应用过滤条件
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        query = query.eq(key, value);
+      }
+    });
+
+    const { data, error } = await query;
+    return { data, error };
+  } catch (error) {
+    console.error('获取工作队信息错误:', error);
+    return { data: null, error: error.message };
   }
 };

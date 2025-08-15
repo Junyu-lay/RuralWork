@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
+import { 
   Card,
   Table,
   Button,
@@ -39,7 +39,10 @@ import dayjs from 'dayjs';
 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
-const { TabPane } = Tabs;
+const buildTabItems = (basicContent, candidatesContent) => ([
+  { key: 'basic', label: '基本信息', children: basicContent },
+  { key: 'candidates', label: '候选人选择', children: candidatesContent },
+]);
 
 const VoteManagement = () => {
   const { user: currentUser } = useAuth();
@@ -347,6 +350,8 @@ const VoteManagement = () => {
           dataSource={votes}
           rowKey="id"
           loading={loading}
+          className="admin-table"
+          scroll={{ x: 1000 }}
           pagination={{
             total: votes.length,
             pageSize: 10,
@@ -370,8 +375,8 @@ const VoteManagement = () => {
           layout="vertical"
           onFinish={saveVote}
         >
-          <Tabs defaultActiveKey="basic">
-            <TabPane tab="基本信息" key="basic">
+          <Tabs defaultActiveKey="basic" items={buildTabItems(
+            (
               <Row gutter={16}>
                 <Col span={24}>
                   <Form.Item
@@ -438,9 +443,8 @@ const VoteManagement = () => {
                   </Form.Item>
                 </Col>
               </Row>
-            </TabPane>
-            
-            <TabPane tab="候选人选择" key="candidates">
+            ),
+            (
               <div className="candidates-section">
                 <div className="candidates-header">
                   <h4>从系统用户中选择候选人 ({selectedCandidateIds.length} 人已选)</h4>
@@ -473,8 +477,8 @@ const VoteManagement = () => {
                   showSearch
                 />
               </div>
-            </TabPane>
-          </Tabs>
+            )
+          )} />
           
           <Divider />
           

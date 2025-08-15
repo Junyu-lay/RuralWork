@@ -44,7 +44,7 @@ const LoginPage = () => {
       </div>
       
       <div className="login-container">
-        <Card className="login-card" bordered={false}>
+        <Card className="login-card" variant="filled">
           <div className="login-header">
             <div className="logo-section">
               <UserOutlined className="logo-icon" />

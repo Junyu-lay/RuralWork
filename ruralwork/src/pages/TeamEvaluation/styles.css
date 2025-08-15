@@ -1,0 +1,159 @@
+.team-evaluation-page {
+  padding: 24px;
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+.team-evaluation-page .admin-card {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.team-evaluation-page .ant-card-head-title {
+  font-weight: 600;
+  color: #262626;
+}
+
+/* 评分活动卡片样式 */
+.team-evaluation-page .ant-card-small .ant-card-head {
+  min-height: 48px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.team-evaluation-page .ant-card-small .ant-card-body {
+  padding: 16px;
+}
+
+/* 工作队卡片悬停效果 */
+.team-evaluation-page .ant-card-small:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+/* 评分表单样式 */
+.team-evaluation-page .ant-form-item-label > label {
+  font-weight: 500;
+}
+
+.team-evaluation-page .ant-input-number {
+  border-radius: 6px;
+}
+
+.team-evaluation-page .ant-rate {
+  font-size: 16px;
+}
+
+/* 评分记录表格样式 */
+.team-evaluation-page .ant-table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.team-evaluation-page .ant-table-thead > tr > th {
+  background: #fafafa;
+  font-weight: 600;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.team-evaluation-page .ant-table-tbody > tr:hover > td {
+  background: #f5f5f5;
+}
+
+/* 模态框样式 */
+.team-evaluation-page .ant-modal-header {
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.team-evaluation-page .ant-modal-title {
+  font-weight: 600;
+  color: #262626;
+}
+
+/* 状态标签样式 */
+.team-evaluation-page .ant-tag {
+  border-radius: 12px;
+  font-weight: 500;
+  border: none;
+}
+
+/* 统计数据样式 */
+.team-evaluation-page .ant-statistic-title {
+  font-weight: 500;
+  color: #666;
+}
+
+.team-evaluation-page .ant-statistic-content {
+  font-weight: 600;
+}
+
+/* 评分卡片网格布局 */
+.team-evaluation-page .ant-col {
+  margin-bottom: 16px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .team-evaluation-page {
+    padding: 12px;
+  }
+  
+  .team-evaluation-page .ant-modal {
+    margin: 0;
+    padding: 12px;
+  }
+  
+  .team-evaluation-page .ant-table {
+    font-size: 12px;
+  }
+  
+  .team-evaluation-page .ant-card-small .ant-card-body {
+    padding: 12px;
+  }
+}
+
+/* 加载状态样式 */
+.team-evaluation-page .loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  background: #fff;
+  border-radius: 8px;
+}
+
+/* 空状态样式 */
+.team-evaluation-page .empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #999;
+}
+
+.team-evaluation-page .empty-state .anticon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  color: #d9d9d9;
+}
+
+/* 评分指导文字样式 */
+.team-evaluation-page .score-guide {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* 工作队信息卡片样式 */
+.team-evaluation-page .team-item {
+  transition: all 0.3s ease;
+}
+
+.team-evaluation-page .team-item:hover {
+  background-color: #f0f9ff !important;
+  border-color: #1890ff !important;
+}
+
+.team-evaluation-page .team-evaluated {
+  background-color: #f6ffed !important;
+  border-color: #52c41a !important;
+}

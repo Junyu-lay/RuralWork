@@ -10,23 +10,22 @@ import {
   Table,
   Space,
   Divider,
-  Tabs
+  Progress,
+  Tag
 } from 'antd';
-import { Column, Pie, Radar } from '@ant-design/charts';
+
 import {
   DownloadOutlined,
   BarChartOutlined,
   UserOutlined,
   TeamOutlined,
-  TrophyOutlined,
-  CalendarOutlined,
-  FileExcelOutlined
+  FileExcelOutlined,
+  MinusCircleOutlined
 } from '@ant-design/icons';
 import { getData } from '../../../services/databaseService';
 import dayjs from 'dayjs';
 
 const { RangePicker } = DatePicker;
-const { TabPane } = Tabs;
 
 const DataStatistics = () => {
   const [loading, setLoading] = useState(false);
@@ -51,6 +50,7 @@ const DataStatistics = () => {
       completed: 0,
       averageScores: {},
       topPerformers: [],
+      allUserScores: [],
       departmentStats: [],
       dimensionStats: [],
       scoreDistribution: [],
@@ -62,6 +62,12 @@ const DataStatistics = () => {
       approved: 0,
       totalDays: 0,
       byType: {}
+    },
+    attendance: {
+      userScores: [],
+      averageScore: 0,
+      topScorers: [],
+      lowScorers: []
     }
   });
 
@@ -167,6 +173,61 @@ const DataStatistics = () => {
         .sort((a, b) => parseFloat(b.score) - parseFloat(a.score))
         .slice(0, 10);
 
+      // 计算所有用户的详细评分（包括各个维度分数）
+      const allUserEvaluations = completedEvaluations.reduce((acc, evaluation) => {
+        const user = userMap.get(evaluation.evaluatee_id);
+        if (!user || user.role === 'admin') return acc;
+        
+        if (!acc[evaluation.evaluatee_id]) {
+          acc[evaluation.evaluatee_id] = { 
+            user,
+            scores: {
+              de: [],
+              neng: [],
+              qin: [],
+              ji: [],
+              lian: [],
+              total: []
+            },
+            count: 0
+          };
+        }
+        
+        acc[evaluation.evaluatee_id].scores.de.push(evaluation.score_de || 0);
+        acc[evaluation.evaluatee_id].scores.neng.push(evaluation.score_neng || 0);
+        acc[evaluation.evaluatee_id].scores.qin.push(evaluation.score_qin || 0);
+        acc[evaluation.evaluatee_id].scores.ji.push(evaluation.score_ji || 0);
+        acc[evaluation.evaluatee_id].scores.lian.push(evaluation.score_lian || 0);
+        acc[evaluation.evaluatee_id].scores.total.push(evaluation.total_score || 0);
+        acc[evaluation.evaluatee_id].count += 1;
+        
+        return acc;
+      }, {});
+
+      const allUserScores = Object.entries(allUserEvaluations)
+        .map(([userId, data]) => {
+          const avgScores = {
+            de: (data.scores.de.reduce((sum, score) => sum + score, 0) / data.count).toFixed(1),
+            neng: (data.scores.neng.reduce((sum, score) => sum + score, 0) / data.count).toFixed(1),
+            qin: (data.scores.qin.reduce((sum, score) => sum + score, 0) / data.count).toFixed(1),
+            ji: (data.scores.ji.reduce((sum, score) => sum + score, 0) / data.count).toFixed(1),
+            lian: (data.scores.lian.reduce((sum, score) => sum + score, 0) / data.count).toFixed(1),
+            total: (data.scores.total.reduce((sum, score) => sum + score, 0) / data.count).toFixed(1)
+          };
+          
+          return {
+            id: userId,
+            name: data.user.name,
+            department: data.user.department,
+            position: data.user.position,
+            phone: data.user.phone,
+            evaluationCount: data.count,
+            averageScores: avgScores,
+            totalAverage: parseFloat(avgScores.total)
+          };
+        })
+        .sort((a, b) => b.totalAverage - a.totalAverage);
+
       // 计算部门统计（用于柱状图）
       const departmentStats = {};
       completedEvaluations.forEach(evaluation => {
@@ -226,6 +287,40 @@ const DataStatistics = () => {
         return acc;
       }, {});
 
+      // 处理考勤数据
+      const userScoresWithLeave = users
+        .filter(user => user.role !== 'admin') // 排除管理员
+        .map(user => {
+          const userLeaves = leaves.filter(leave => 
+            leave.user_id === user.id && 
+            leave.status === 'approved' && 
+            leave.leave_type === 'personal'
+          );
+          const totalDeduction = userLeaves.reduce((sum, leave) => sum + (leave.days_count || 0), 0);
+          const currentScore = user.total_score || 100;
+          
+          return {
+            id: user.id,
+            name: user.name,
+            department: user.department,
+            position: user.position,
+            phone: user.phone,
+            currentScore,
+            totalDeduction,
+            personalLeaveCount: userLeaves.length,
+            personalLeaveDays: totalDeduction,
+            scorePercent: Math.round((currentScore / 100) * 100)
+          };
+        })
+        .sort((a, b) => b.currentScore - a.currentScore);
+
+      const averageAttendanceScore = userScoresWithLeave.length > 0
+        ? (userScoresWithLeave.reduce((sum, user) => sum + user.currentScore, 0) / userScoresWithLeave.length).toFixed(1)
+        : 100;
+
+      const topScorers = userScoresWithLeave.slice(0, 5);
+      const lowScorers = userScoresWithLeave.filter(user => user.currentScore < 95).slice(-5);
+
       setStatisticsData({
         users: {
           total: users.length,
@@ -243,6 +338,7 @@ const DataStatistics = () => {
           completed: completedEvaluations.length,
           averageScores,
           topPerformers,
+          allUserScores,
           departmentStats: departmentStatsArray,
           dimensionStats,
           scoreDistribution,
@@ -254,6 +350,12 @@ const DataStatistics = () => {
           approved: approvedLeaves,
           totalDays: totalLeaveDays,
           byType: leavesByType
+        },
+        attendance: {
+          userScores: userScoresWithLeave,
+          averageScore: parseFloat(averageAttendanceScore),
+          topScorers,
+          lowScorers
         }
       });
 
@@ -283,9 +385,9 @@ const DataStatistics = () => {
           data = statisticsData.votes;
           filename = `投票统计_${dayjs().format('YYYY-MM-DD')}.json`;
           break;
-        case 'leaves':
-          data = statisticsData.leaves;
-          filename = `请假统计_${dayjs().format('YYYY-MM-DD')}.json`;
+        case 'attendance':
+          data = statisticsData.attendance;
+          filename = `考勤统计_${dayjs().format('YYYY-MM-DD')}.json`;
           break;
         default:
           data = statisticsData;
@@ -317,46 +419,9 @@ const DataStatistics = () => {
     work_team: '工作队'
   };
 
-  // 请假类型名称映射
-  const leaveTypeNames = {
-    personal: '私假',
-    sick: '病假',
-    annual: '年假',
-    other: '其他'
-  };
 
-  // 顶级表现者表格列
-  const topPerformersColumns = [
-    {
-      title: '排名',
-      key: 'rank',
-      width: 60,
-      render: (_, __, index) => index + 1
-    },
-    {
-      title: '姓名',
-      dataIndex: 'name',
-      key: 'name',
-      ellipsis: true
-    },
-    {
-      title: '部门',
-      dataIndex: 'department',
-      key: 'department',
-      ellipsis: true
-    },
-    {
-      title: '平均分',
-      dataIndex: 'score',
-      key: 'score',
-      render: (score) => <span style={{ fontWeight: 'bold', color: '#1890ff' }}>{score}</span>
-    },
-    {
-      title: '评价次数',
-      dataIndex: 'evaluationCount',
-      key: 'evaluationCount'
-    }
-  ];
+
+
 
   return (
     <div className="data-statistics">
@@ -484,279 +549,339 @@ const DataStatistics = () => {
         </Button>
       </Card>
 
-      {/* 评价统计 */}
+      {/* 年度互评统计 */}
       <Card title="年度互评统计" className="admin-card">
-        <Tabs defaultActiveKey="overview" size="large">
-          <TabPane tab="概览统计" key="overview">
-            <Row gutter={[24, 24]}>
-              <Col xs={24} lg={12}>
-                <h4>各维度平均分</h4>
-                <Row gutter={[16, 16]}>
-                  <Col span={12}>
-                    <Statistic
-                      title="德分"
-                      value={statisticsData.evaluations.averageScores.de}
-                      suffix="/20"
-                      valueStyle={{ color: '#ff4d4f' }}
-                    />
-                  </Col>
-                  <Col span={12}>
-                    <Statistic
-                      title="能分"
-                      value={statisticsData.evaluations.averageScores.neng}
-                      suffix="/20"
-                      valueStyle={{ color: '#52c41a' }}
-                    />
-                  </Col>
-                  <Col span={12}>
-                    <Statistic
-                      title="勤分"
-                      value={statisticsData.evaluations.averageScores.qin}
-                      suffix="/20"
-                      valueStyle={{ color: '#1890ff' }}
-                    />
-                  </Col>
-                  <Col span={12}>
-                    <Statistic
-                      title="技分"
-                      value={statisticsData.evaluations.averageScores.ji}
-                      suffix="/20"
-                      valueStyle={{ color: '#722ed1' }}
-                    />
-                  </Col>
-                  <Col span={24}>
-                    <Statistic
-                      title="廉分"
-                      value={statisticsData.evaluations.averageScores.lian}
-                      suffix="/20"
-                      valueStyle={{ color: '#faad14' }}
-                    />
-                  </Col>
-                </Row>
-              </Col>
-              <Col xs={24} lg={12}>
-                <h4>表现优秀人员 TOP 10</h4>
-                <Table
-                  columns={topPerformersColumns}
-                  dataSource={statisticsData.evaluations.topPerformers}
-                  pagination={false}
-                  size="small"
-                  rowKey="name"
-                  scroll={{ y: 300 }}
-                />
-              </Col>
-            </Row>
-            <Divider />
-            <Space>
-              <Statistic
-                title="评价总数"
-                value={statisticsData.evaluations.total}
-                prefix={<TrophyOutlined />}
-                valueStyle={{ color: '#3f8600' }}
-              />
-              <Statistic
-                title="已完成评价"
-                value={statisticsData.evaluations.completed}
-                prefix={<TrophyOutlined />}
-                valueStyle={{ color: '#52c41a' }}
-              />
-              <Button 
-                icon={<DownloadOutlined />}
-                onClick={() => exportData('evaluations')}
-              >
-                导出评价统计
-              </Button>
-            </Space>
-          </TabPane>
-
-          <TabPane tab="可视化分析" key="charts">
-            <Row gutter={[24, 24]}>
-              {/* 雷达图 - 各维度得分 */}
-              <Col xs={24} lg={12}>
-                <div style={{ marginBottom: 16 }}>
-                  <h4>各维度平均得分雷达图</h4>
-                  <Radar
-                    data={statisticsData.evaluations.dimensionStats}
-                    xField="dimension"
-                    yField="score"
-                    area={{}}
-                    point={{
-                      size: 2,
-                    }}
-                    meta={{
-                      score: {
-                        alias: '得分',
-                        min: 0,
-                        max: 20,
-                      },
-                    }}
-                    xAxis={{
-                      line: null,
-                      tickLine: null,
-                    }}
-                    yAxis={{
-                      label: false,
-                      grid: {
-                        alternateColor: 'rgba(0, 0, 0, 0.04)',
-                      },
-                    }}
-                    height={300}
-                  />
-                </div>
-              </Col>
-
-              {/* 柱状图 - 部门平均分 */}
-              <Col xs={24} lg={12}>
-                <div style={{ marginBottom: 16 }}>
-                  <h4>各部门平均得分排名</h4>
-                  <Column
-                    data={statisticsData.evaluations.departmentStats}
-                    xField="department"
-                    yField="averageScore"
-                    label={{
-                      position: 'middle',
-                      style: {
-                        fill: '#FFFFFF',
-                        opacity: 0.6,
-                      },
-                    }}
-                    xAxis={{
-                      label: {
-                        autoHide: true,
-                        autoRotate: false,
-                      },
-                    }}
-                    meta={{
-                      averageScore: {
-                        alias: '平均分',
-                      },
-                    }}
-                    height={300}
-                  />
-                </div>
-              </Col>
-
-              {/* 饼图 - 分数分布 */}
-              <Col xs={24} lg={12}>
-                <div style={{ marginBottom: 16 }}>
-                  <h4>评分分布情况</h4>
-                  <Pie
-                    data={statisticsData.evaluations.scoreDistribution}
-                    angleField="count"
-                    colorField="range"
-                    radius={0.8}
-                    label={{
-                      type: 'outer',
-                      content: '{name} {percentage}',
-                    }}
-                    interactions={[
-                      {
-                        type: 'element-active',
-                      },
-                    ]}
-                    height={300}
-                  />
-                </div>
-              </Col>
-
-              {/* 柱状图 - 部门参与情况 */}
-              <Col xs={24} lg={12}>
-                <div style={{ marginBottom: 16 }}>
-                  <h4>部门参与情况统计</h4>
-                  <Column
-                    data={statisticsData.evaluations.departmentStats}
-                    xField="department"
-                    yField="evaluationCount"
-                    label={{
-                      position: 'middle',
-                      style: {
-                        fill: '#FFFFFF',
-                        opacity: 0.6,
-                      },
-                    }}
-                    xAxis={{
-                      label: {
-                        autoHide: true,
-                        autoRotate: false,
-                      },
-                    }}
-                    meta={{
-                      evaluationCount: {
-                        alias: '评价次数',
-                      },
-                    }}
-                    color="#52c41a"
-                    height={300}
-                  />
-                </div>
-              </Col>
-            </Row>
-          </TabPane>
-        </Tabs>
+        <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h4>所有用户评分详情</h4>
+          <Button 
+            icon={<DownloadOutlined />}
+            onClick={() => exportData('evaluations')}
+          >
+            导出评价统计
+          </Button>
+        </div>
+        
+        <Table
+          columns={[
+            {
+              title: '排名',
+              key: 'rank',
+              width: 70,
+              fixed: 'left',
+              render: (_, __, index) => (
+                <span style={{ 
+                  fontWeight: 600,
+                  color: index < 3 ? '#f5222d' : index < 10 ? '#fa8c16' : '#666'
+                }}>
+                  {index + 1}
+                </span>
+              )
+            },
+            {
+              title: '姓名',
+              dataIndex: 'name',
+              key: 'name',
+              width: 100,
+              fixed: 'left'
+            },
+            {
+              title: '部门',
+              dataIndex: 'department',
+              key: 'department',
+              width: 120
+            },
+            {
+              title: '职位',
+              dataIndex: 'position',
+              key: 'position',
+              width: 120
+            },
+            {
+              title: '总平均分',
+              dataIndex: 'totalAverage',
+              key: 'totalAverage',
+              width: 120,
+              render: (score) => (
+                <span style={{ 
+                  fontSize: 16, 
+                  fontWeight: 600,
+                  color: score >= 90 ? '#52c41a' : score >= 80 ? '#1890ff' : score >= 70 ? '#faad14' : '#ff4d4f'
+                }}>
+                  {score}
+                </span>
+              ),
+              sorter: (a, b) => a.totalAverage - b.totalAverage,
+              defaultSortOrder: 'descend'
+            },
+            {
+              title: '德 (20分)',
+              key: 'de',
+              width: 100,
+              render: (_, record) => (
+                <span style={{ color: '#ff4d4f' }}>
+                  {record.averageScores.de}
+                </span>
+              ),
+              sorter: (a, b) => parseFloat(a.averageScores.de) - parseFloat(b.averageScores.de)
+            },
+            {
+              title: '能 (20分)',
+              key: 'neng',
+              width: 100,
+              render: (_, record) => (
+                <span style={{ color: '#52c41a' }}>
+                  {record.averageScores.neng}
+                </span>
+              ),
+              sorter: (a, b) => parseFloat(a.averageScores.neng) - parseFloat(b.averageScores.neng)
+            },
+            {
+              title: '勤 (20分)',
+              key: 'qin',
+              width: 100,
+              render: (_, record) => (
+                <span style={{ color: '#1890ff' }}>
+                  {record.averageScores.qin}
+                </span>
+              ),
+              sorter: (a, b) => parseFloat(a.averageScores.qin) - parseFloat(b.averageScores.qin)
+            },
+            {
+              title: '技 (20分)',
+              key: 'ji',
+              width: 100,
+              render: (_, record) => (
+                <span style={{ color: '#722ed1' }}>
+                  {record.averageScores.ji}
+                </span>
+              ),
+              sorter: (a, b) => parseFloat(a.averageScores.ji) - parseFloat(b.averageScores.ji)
+            },
+            {
+              title: '廉 (20分)',
+              key: 'lian',
+              width: 100,
+              render: (_, record) => (
+                <span style={{ color: '#faad14' }}>
+                  {record.averageScores.lian}
+                </span>
+              ),
+              sorter: (a, b) => parseFloat(a.averageScores.lian) - parseFloat(b.averageScores.lian)
+            },
+            {
+              title: '评价次数',
+              dataIndex: 'evaluationCount',
+              key: 'evaluationCount',
+              width: 100,
+              render: (count) => (
+                <Tag color={count >= 5 ? 'green' : count >= 3 ? 'blue' : 'orange'}>
+                  {count}次
+                </Tag>
+              ),
+              sorter: (a, b) => a.evaluationCount - b.evaluationCount
+            },
+            {
+              title: '联系方式',
+              dataIndex: 'phone',
+              key: 'phone',
+              width: 130
+            }
+          ]}
+          dataSource={statisticsData.evaluations.allUserScores}
+          rowKey="id"
+          pagination={{
+            total: statisticsData.evaluations.allUserScores.length,
+            pageSize: 10,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total) => `共 ${total} 人`
+          }}
+          scroll={{ x: 1200 }}
+          size="small"
+          summary={(pageData) => {
+            const totalUsers = pageData.length;
+            if (totalUsers === 0) return null;
+            
+            const avgTotal = (pageData.reduce((sum, record) => sum + record.totalAverage, 0) / totalUsers).toFixed(1);
+            const avgDe = (pageData.reduce((sum, record) => sum + parseFloat(record.averageScores.de), 0) / totalUsers).toFixed(1);
+            const avgNeng = (pageData.reduce((sum, record) => sum + parseFloat(record.averageScores.neng), 0) / totalUsers).toFixed(1);
+            const avgQin = (pageData.reduce((sum, record) => sum + parseFloat(record.averageScores.qin), 0) / totalUsers).toFixed(1);
+            const avgJi = (pageData.reduce((sum, record) => sum + parseFloat(record.averageScores.ji), 0) / totalUsers).toFixed(1);
+            const avgLian = (pageData.reduce((sum, record) => sum + parseFloat(record.averageScores.lian), 0) / totalUsers).toFixed(1);
+            
+            return (
+              <Table.Summary.Row style={{ backgroundColor: '#fafafa' }}>
+                <Table.Summary.Cell index={0}>
+                  <span style={{ fontWeight: 600 }}>平均值</span>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={1}>-</Table.Summary.Cell>
+                <Table.Summary.Cell index={2}>-</Table.Summary.Cell>
+                <Table.Summary.Cell index={3}>-</Table.Summary.Cell>
+                <Table.Summary.Cell index={4}>
+                  <span style={{ fontWeight: 600, color: '#1890ff' }}>{avgTotal}</span>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={5}>
+                  <span style={{ color: '#ff4d4f' }}>{avgDe}</span>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={6}>
+                  <span style={{ color: '#52c41a' }}>{avgNeng}</span>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={7}>
+                  <span style={{ color: '#1890ff' }}>{avgQin}</span>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={8}>
+                  <span style={{ color: '#722ed1' }}>{avgJi}</span>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={9}>
+                  <span style={{ color: '#faad14' }}>{avgLian}</span>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={10}>-</Table.Summary.Cell>
+                <Table.Summary.Cell index={11}>-</Table.Summary.Cell>
+              </Table.Summary.Row>
+            );
+          }}
+        />
       </Card>
 
-      {/* 请假统计 */}
-      <Card title="请假统计" className="admin-card">
-        <Row gutter={[16, 16]}>
+
+
+      {/* 考勤得分统计 */}
+      <Card title="考勤得分统计" className="admin-card">
+        <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
           <Col xs={12} sm={6}>
             <Statistic
-              title="总申请数"
-              value={statisticsData.leaves.total}
-              prefix={<CalendarOutlined />}
+              title="平均得分"
+              value={statisticsData.attendance.averageScore}
+              suffix="分"
+              precision={1}
               valueStyle={{ color: '#1890ff' }}
             />
           </Col>
           <Col xs={12} sm={6}>
             <Statistic
-              title="待审批"
-              value={statisticsData.leaves.pending}
-              prefix={<CalendarOutlined />}
-              valueStyle={{ color: '#faad14' }}
-            />
-          </Col>
-          <Col xs={12} sm={6}>
-            <Statistic
-              title="已批准"
-              value={statisticsData.leaves.approved}
-              prefix={<CalendarOutlined />}
+              title="满分人数"
+              value={statisticsData.attendance.userScores.filter(user => user.currentScore === 100).length}
               valueStyle={{ color: '#52c41a' }}
             />
           </Col>
           <Col xs={12} sm={6}>
             <Statistic
-              title="总请假天数"
-              value={statisticsData.leaves.totalDays}
+              title="被扣分人数"
+              value={statisticsData.attendance.userScores.filter(user => user.currentScore < 100).length}
+              valueStyle={{ color: '#ff4d4f' }}
+            />
+          </Col>
+          <Col xs={12} sm={6}>
+            <Statistic
+              title="总扣分天数"
+              value={statisticsData.attendance.userScores.reduce((sum, user) => sum + user.totalDeduction, 0)}
               suffix="天"
-              prefix={<CalendarOutlined />}
-              valueStyle={{ color: '#722ed1' }}
+              valueStyle={{ color: '#faad14' }}
             />
           </Col>
         </Row>
+
+        <Divider />
         
-        {Object.keys(statisticsData.leaves.byType).length > 0 && (
-          <>
-            <Divider />
-            <h4>按请假类型统计</h4>
-            <Row gutter={[16, 16]}>
-              {Object.entries(statisticsData.leaves.byType).map(([type, count]) => (
-                <Col xs={12} sm={6} key={type}>
-                  <Statistic
-                    title={leaveTypeNames[type] || type}
-                    value={count}
-                    valueStyle={{ color: '#666' }}
+        {/* 详细得分表格 */}
+        <h4>员工考勤得分详情</h4>
+        <Table
+          columns={[
+            {
+              title: '姓名',
+              dataIndex: 'name',
+              key: 'name',
+              width: 100,
+              fixed: 'left'
+            },
+            {
+              title: '部门',
+              dataIndex: 'department',
+              key: 'department',
+              width: 120
+            },
+            {
+              title: '职位',
+              dataIndex: 'position',
+              key: 'position',
+              width: 120
+            },
+            {
+              title: '当前得分',
+              dataIndex: 'currentScore',
+              key: 'currentScore',
+              width: 120,
+              render: (score) => (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ 
+                    fontSize: 16, 
+                    fontWeight: 600,
+                    color: score === 100 ? '#52c41a' : score >= 95 ? '#1890ff' : score >= 90 ? '#faad14' : '#ff4d4f'
+                  }}>
+                    {score}
+                  </span>
+                  <Progress 
+                    percent={score} 
+                    size="small" 
+                    showInfo={false}
+                    strokeColor={score === 100 ? '#52c41a' : score >= 95 ? '#1890ff' : score >= 90 ? '#faad14' : '#ff4d4f'}
+                    style={{ width: 60 }}
                   />
-                </Col>
-              ))}
-            </Row>
-          </>
-        )}
+                </div>
+              ),
+              sorter: (a, b) => a.currentScore - b.currentScore,
+              defaultSortOrder: 'descend'
+            },
+            {
+              title: '私假次数',
+              dataIndex: 'personalLeaveCount',
+              key: 'personalLeaveCount',
+              width: 100,
+              render: (count) => count > 0 ? (
+                <Tag color="orange">{count}次</Tag>
+              ) : (
+                <Tag color="green">0次</Tag>
+              )
+            },
+            {
+              title: '扣分天数',
+              dataIndex: 'personalLeaveDays',
+              key: 'personalLeaveDays',
+              width: 100,
+              render: (days) => days > 0 ? (
+                <span style={{ color: '#ff4d4f' }}>
+                  <MinusCircleOutlined /> {days}天
+                </span>
+              ) : (
+                <span style={{ color: '#52c41a' }}>0天</span>
+              )
+            },
+            {
+              title: '联系方式',
+              dataIndex: 'phone',
+              key: 'phone',
+              width: 130
+            }
+          ]}
+          dataSource={statisticsData.attendance.userScores}
+          rowKey="id"
+          pagination={{
+            total: statisticsData.attendance.userScores.length,
+            pageSize: 10,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total) => `共 ${total} 人`
+          }}
+          scroll={{ x: 800 }}
+          size="small"
+        />
         
         <Divider />
         <Button 
           icon={<DownloadOutlined />}
-          onClick={() => exportData('leaves')}
+          onClick={() => exportData('attendance')}
         >
-          导出请假统计
+          导出考勤统计
         </Button>
       </Card>
     </div>

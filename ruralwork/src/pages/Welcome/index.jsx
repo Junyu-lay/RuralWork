@@ -148,7 +148,7 @@ const WelcomePage = () => {
       {/* 上半部分 - 欢迎区域 */}
       <section className="hero-section">
         <div 
-          className="hero-background" 
+          className="hero-background"
           style={{
             backgroundImage: `url(${welcomeBg})`
           }}
