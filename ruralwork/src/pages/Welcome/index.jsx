@@ -124,7 +124,7 @@ const WelcomePage = () => {
           <div className="nav-left">
             <div className="system-logo">
               <UserOutlined className="logo-icon" />
-              <span className="system-name">事务日常管理系统</span>
+              <span className="system-name">日常事务管理系统</span>
             </div>
           </div>
           <div className="nav-right">
@@ -156,7 +156,7 @@ const WelcomePage = () => {
         <div className="hero-overlay" />
         
         <div className="hero-content">
-          <h1 className="hero-title">欢迎使用童坊镇政务管理系统</h1>
+          <h1 className="hero-title">欢迎使用日常事务管理系统</h1>
           <p className="hero-subtitle">高效、透明、便民的数字化政务平台</p>
           
           <div className="hero-buttons">
