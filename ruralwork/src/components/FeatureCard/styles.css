@@ -1,0 +1,200 @@
+/* 功能卡片样式 */
+.feature-card {
+  border-radius: 16px;
+  border: 1px solid #f0f0f0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  overflow: hidden;
+  background: #ffffff;
+  position: relative;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  border-color: #1890ff;
+}
+
+.feature-card.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.feature-card.disabled:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: #f0f0f0;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 180px;
+}
+
+.card-icon-wrapper {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.card-icon {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 28px;
+  transition: all 0.3s;
+}
+
+.feature-card:hover .card-icon {
+  transform: scale(1.1);
+}
+
+.card-body {
+  flex: 1;
+  text-align: center;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #262626;
+  margin: 0;
+  text-align: center;
+}
+
+.card-description {
+  font-size: 14px;
+  color: #8c8c8c;
+  line-height: 1.5;
+  margin: 0;
+  text-align: center;
+}
+
+.card-footer {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.card-action-btn {
+  color: #1890ff;
+  padding: 0;
+  height: auto;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.card-action-btn:hover {
+  color: #40a9ff;
+}
+
+.card-action-btn:disabled {
+  color: #d9d9d9;
+}
+
+/* 特定功能卡片颜色 */
+.feature-card[data-feature="voting"] .card-icon {
+  background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+}
+
+.feature-card[data-feature="evaluation"] .card-icon {
+  background: linear-gradient(135deg, #45b7d1 0%, #96c93d 100%);
+}
+
+.feature-card[data-feature="leave"] .card-icon {
+  background: linear-gradient(135deg, #f9ca24 0%, #f0932b 100%);
+}
+
+.feature-card[data-feature="team-evaluation"] .card-icon {
+  background: linear-gradient(135deg, #a55eea 0%, #26de81 100%);
+}
+
+.feature-card[data-feature="admin"] .card-icon {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+}
+
+/* 悬停效果 */
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #1890ff, #40a9ff);
+  transform: scaleX(0);
+  transition: transform 0.3s;
+}
+
+.feature-card:hover::before {
+  transform: scaleX(1);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .card-content {
+    min-height: 160px;
+  }
+  
+  .card-icon {
+    font-size: 24px;
+  }
+  
+  .card-title {
+    font-size: 16px;
+  }
+  
+  .card-description {
+    font-size: 13px;
+  }
+}
+
+/* 加载状态 */
+.feature-card.loading {
+  pointer-events: none;
+}
+
+.feature-card.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 权限标签样式 */
+.ant-tag {
+  border-radius: 12px;
+  font-size: 11px;
+  padding: 2px 8px;
+  margin: 0;
+}
+
+/* 动画效果 */
+.feature-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
