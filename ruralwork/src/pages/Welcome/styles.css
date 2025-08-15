@@ -103,7 +103,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('/welcome-bg.jpg');
+  /* background-image is now set via inline style in JSX */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

@@ -12,7 +12,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import FeatureCard from '../../components/FeatureCard';
-
+import welcomeBg from '../../assets/images/3b7df72a022102a2ee30be25ea6bbe4c.jpg';
 import './styles.css';
 
 const WelcomePage = () => {
@@ -147,7 +147,12 @@ const WelcomePage = () => {
 
       {/* 上半部分 - 欢迎区域 */}
       <section className="hero-section">
-        <div className="hero-background" />
+        <div 
+          className="hero-background" 
+          style={{
+            backgroundImage: `url(${welcomeBg})`
+          }}
+        />
         <div className="hero-overlay" />
         
         <div className="hero-content">
