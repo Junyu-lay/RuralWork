@@ -1,0 +1,409 @@
+/* 年度互评页面样式 */
+.evaluation-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 24px;
+}
+
+.evaluation-header {
+  margin-bottom: 24px;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-info h2 {
+  margin: 0 0 8px 0;
+  color: #262626;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.header-stats .ant-statistic {
+  text-align: center;
+}
+
+.header-stats .ant-statistic-title {
+  color: #8c8c8c;
+  font-size: 14px;
+}
+
+.header-stats .ant-statistic-content {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* 评价内容样式 */
+.evaluation-content {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.evaluation-item {
+  padding: 20px !important;
+  border-bottom: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.evaluation-item:hover {
+  background: #fafafa;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.evaluation-item:last-child {
+  border-bottom: none;
+}
+
+.user-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.user-description {
+  color: #595959;
+}
+
+/* 评价指南样式 */
+.evaluation-guide .ant-card-head-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.score-dimensions {
+  margin-top: 16px;
+}
+
+.dimension-item {
+  margin-bottom: 12px;
+  padding: 8px;
+  background: #fafafa;
+  border-radius: 6px;
+  border-left: 4px solid #1890ff;
+}
+
+.dimension-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.dimension-label {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.dimension-score {
+  font-size: 12px;
+  color: #8c8c8c;
+  font-weight: 500;
+}
+
+/* 评价弹窗样式 */
+.evaluation-modal {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.evaluatee-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: #f6f9ff;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  border-left: 4px solid #1890ff;
+}
+
+.evaluatee-details h4 {
+  margin: 0 0 4px 0;
+  color: #262626;
+}
+
+.evaluation-form .ant-form-item {
+  margin-bottom: 24px;
+}
+
+.dimension-label-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.evaluation-form .ant-rate {
+  font-size: 18px;
+}
+
+.evaluation-form .ant-rate-star {
+  margin-right: 4px;
+}
+
+.evaluation-form .ant-rate-star-full .ant-rate-star-first,
+.evaluation-form .ant-rate-star-full .ant-rate-star-second {
+  color: inherit;
+}
+
+/* 进度样式 */
+.ant-progress-line .ant-progress-bg {
+  border-radius: 6px;
+  height: 10px !important;
+}
+
+.ant-progress-line .ant-progress-outer {
+  border-radius: 6px;
+}
+
+/* 状态徽章样式 */
+.ant-badge-status-dot {
+  width: 8px;
+  height: 8px;
+}
+
+.ant-badge-status-text {
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+/* 步骤样式 */
+.ant-steps-vertical .ant-steps-item-content {
+  min-height: 48px;
+}
+
+.ant-steps-item-title {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+.ant-steps-item-description {
+  font-size: 12px !important;
+  color: #8c8c8c !important;
+}
+
+/* 评分星星样式 - 不同维度不同颜色 */
+.evaluation-form .ant-form-item:nth-child(1) .ant-rate-star-full {
+  color: #ff4d4f;
+}
+
+.evaluation-form .ant-form-item:nth-child(2) .ant-rate-star-full {
+  color: #1890ff;
+}
+
+.evaluation-form .ant-form-item:nth-child(3) .ant-rate-star-full {
+  color: #52c41a;
+}
+
+.evaluation-form .ant-form-item:nth-child(4) .ant-rate-star-full {
+  color: #faad14;
+}
+
+.evaluation-form .ant-form-item:nth-child(5) .ant-rate-star-full {
+  color: #722ed1;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .evaluation-page {
+    padding: 16px;
+  }
+
+  .header-content {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .evaluation-content .ant-row {
+    flex-direction: column;
+  }
+
+  .evaluation-content .ant-col {
+    width: 100% !important;
+    margin-bottom: 16px;
+  }
+
+  .evaluation-item {
+    padding: 16px !important;
+  }
+
+  .evaluation-item .ant-list-item-action {
+    margin-top: 12px;
+  }
+
+  .evaluatee-info {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .dimension-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
+@media (max-width: 576px) {
+  .header-stats .ant-row {
+    justify-content: center;
+  }
+
+  .header-stats .ant-col {
+    margin-bottom: 16px;
+  }
+
+  .evaluation-form .ant-rate {
+    font-size: 16px;
+  }
+
+  .dimension-item {
+    padding: 6px;
+  }
+}
+
+/* 卡片样式 */
+.evaluation-page .ant-card {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.evaluation-page .ant-card-head {
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.evaluation-page .ant-card-head-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #262626;
+}
+
+/* 空状态样式 */
+.ant-empty {
+  padding: 40px 0;
+}
+
+.ant-empty-description {
+  color: #8c8c8c;
+  font-size: 16px;
+}
+
+/* 警告框样式 */
+.ant-alert {
+  border-radius: 8px;
+}
+
+.ant-alert-info {
+  border-left: 4px solid #1890ff;
+}
+
+/* 文本域样式 */
+.ant-input {
+  border-radius: 6px;
+}
+
+.ant-input:focus,
+.ant-input-focused {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+/* 按钮样式 */
+.ant-btn {
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.ant-btn-primary {
+  background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%);
+  border: none;
+}
+
+.ant-btn-primary:hover {
+  background: linear-gradient(135deg, #40a9ff 0%, #1890ff 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+}
+
+/* 模态框样式 */
+.ant-modal-header {
+  border-bottom: 2px solid #f0f0f0;
+  border-radius: 8px 8px 0 0;
+}
+
+.ant-modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.ant-modal-footer {
+  border-top: 2px solid #f0f0f0;
+  padding: 16px 24px;
+}
+
+.ant-modal-footer .ant-btn {
+  height: 36px;
+  min-width: 80px;
+}
+
+/* 滚动条样式 */
+.evaluation-modal::-webkit-scrollbar {
+  width: 6px;
+}
+
+.evaluation-modal::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.evaluation-modal::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.evaluation-modal::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* 动画效果 */
+.evaluation-item,
+.evaluation-page .ant-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 加载状态 */
+.ant-spin-container {
+  min-height: 200px;
+}
+
+/* 统计数字颜色 */
+.header-stats .ant-statistic:nth-child(1) .ant-statistic-content {
+  color: #1890ff;
+}
+
+.header-stats .ant-statistic:nth-child(2) .ant-statistic-content {
+  color: #52c41a;
+}
+
+.header-stats .ant-statistic:nth-child(3) .ant-statistic-content {
+  color: #722ed1;
+}

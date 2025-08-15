@@ -1,0 +1,397 @@
+/* 投票页面样式 */
+.voting-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 24px;
+}
+
+.voting-header {
+  margin-bottom: 24px;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-info h1 {
+  margin: 0 0 8px 0;
+  color: #262626;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.header-info p {
+  margin: 0;
+  color: #8c8c8c;
+  font-size: 16px;
+}
+
+.header-stats .ant-statistic {
+  text-align: center;
+}
+
+.header-stats .ant-statistic-title {
+  color: #8c8c8c;
+  font-size: 14px;
+}
+
+.header-stats .ant-statistic-content {
+  color: #1890ff;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* 投票列表样式 */
+.voting-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.votes-list-card .ant-card-head {
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.votes-list-card .ant-card-head-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.vote-item {
+  padding: 24px !important;
+  border-bottom: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.vote-item:hover {
+  background: #fafafa;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.vote-item:last-child {
+  border-bottom: none;
+}
+
+.vote-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #262626;
+  margin-bottom: 8px;
+}
+
+.vote-description p {
+  color: #595959;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.vote-meta {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  font-size: 14px;
+  color: #8c8c8c;
+}
+
+.vote-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.vote-time {
+  color: #1890ff !important;
+  font-weight: 500;
+}
+
+/* 投票弹窗样式 */
+.voting-modal {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.voting-info {
+  background: #f6f9ff;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  border-left: 4px solid #1890ff;
+}
+
+.voting-info p {
+  margin: 0 0 8px 0;
+  color: #262626;
+}
+
+.vote-rule {
+  color: #1890ff !important;
+  font-weight: 500;
+}
+
+.selected-count {
+  color: #52c41a !important;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.candidates-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.candidate-item {
+  padding: 16px !important;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #fafafa;
+}
+
+.candidate-item:hover {
+  border-color: #1890ff;
+  background: #f0f9ff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2);
+}
+
+.candidate-item.selected {
+  border-color: #52c41a;
+  background: #f6ffed;
+}
+
+.candidate-item .ant-list-item-meta-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.candidate-item .ant-list-item-meta-description {
+  color: #8c8c8c;
+  margin-top: 4px;
+}
+
+.candidate-check {
+  display: flex;
+  align-items: center;
+}
+
+/* 结果弹窗样式 */
+.results-modal {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.results-summary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 24px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.results-summary .ant-statistic {
+  color: white;
+}
+
+.results-summary .ant-statistic-title {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.results-summary .ant-statistic-content {
+  color: white !important;
+}
+
+.result-item {
+  padding: 20px !important;
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  background: #fafafa;
+  transition: all 0.3s ease;
+}
+
+.result-item:hover {
+  background: #f0f9ff;
+  border-color: #1890ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.result-title {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.result-description p {
+  color: #595959;
+  margin: 8px 0;
+}
+
+.vote-stats {
+  display: flex;
+  gap: 24px;
+  margin-top: 8px;
+}
+
+.vote-stats span {
+  font-size: 14px;
+  color: #1890ff;
+  font-weight: 500;
+}
+
+.result-progress {
+  margin-top: 12px;
+  width: 100%;
+}
+
+.result-progress .ant-progress-line {
+  margin: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .voting-page {
+    padding: 16px;
+  }
+
+  .header-content {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .vote-meta {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .vote-item {
+    padding: 16px !important;
+  }
+
+  .vote-item .ant-list-item-action {
+    margin-top: 16px;
+  }
+
+  .vote-item .ant-list-item-action > li {
+    margin-bottom: 8px;
+  }
+
+  .candidate-item {
+    padding: 12px !important;
+  }
+
+  .result-item {
+    padding: 16px !important;
+  }
+
+  .vote-stats {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .results-summary {
+    padding: 16px;
+  }
+}
+
+/* 空状态样式 */
+.ant-empty {
+  padding: 60px 0;
+}
+
+.ant-empty-description {
+  color: #8c8c8c;
+  font-size: 16px;
+}
+
+/* 标签样式 */
+.ant-tag {
+  border-radius: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+  font-size: 12px;
+}
+
+/* 徽章样式 */
+.ant-badge .ant-badge-count {
+  box-shadow: 0 0 0 1px #fff;
+}
+
+/* 进度条样式 */
+.ant-progress-line .ant-progress-bg {
+  border-radius: 6px;
+  height: 8px !important;
+}
+
+.ant-progress-line .ant-progress-outer {
+  border-radius: 6px;
+}
+
+/* 加载状态 */
+.ant-spin-container {
+  min-height: 200px;
+}
+
+/* 模态框样式调整 */
+.ant-modal-header {
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.ant-modal-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.ant-modal-footer {
+  border-top: 2px solid #f0f0f0;
+  padding: 16px 24px;
+}
+
+.ant-modal-footer .ant-btn {
+  height: 40px;
+  border-radius: 8px;
+  font-weight: 500;
+  min-width: 80px;
+}
+
+/* 滚动条样式 */
+.voting-modal::-webkit-scrollbar,
+.results-modal::-webkit-scrollbar,
+.candidates-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.voting-modal::-webkit-scrollbar-track,
+.results-modal::-webkit-scrollbar-track,
+.candidates-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.voting-modal::-webkit-scrollbar-thumb,
+.results-modal::-webkit-scrollbar-thumb,
+.candidates-list::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.voting-modal::-webkit-scrollbar-thumb:hover,
+.results-modal::-webkit-scrollbar-thumb:hover,
+.candidates-list::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

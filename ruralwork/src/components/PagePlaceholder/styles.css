@@ -1,0 +1,136 @@
+/* 页面占位符样式 */
+.page-placeholder-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.placeholder-card {
+  max-width: 500px;
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.placeholder-card .ant-card-body {
+  padding: 40px 24px;
+}
+
+.placeholder-card .ant-result-title {
+  color: #262626;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.placeholder-card .ant-result-subtitle {
+  color: #8c8c8c;
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.placeholder-card .ant-result-extra {
+  margin-top: 24px;
+}
+
+.placeholder-card .ant-btn {
+  height: 40px;
+  border-radius: 8px;
+  font-weight: 500;
+  margin: 0 8px;
+  min-width: 120px;
+}
+
+.placeholder-card .ant-btn-primary {
+  background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%);
+  border: none;
+}
+
+.placeholder-card .ant-btn-primary:hover {
+  background: linear-gradient(135deg, #40a9ff 0%, #1890ff 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+}
+
+.placeholder-card .ant-btn:not(.ant-btn-primary) {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid #d9d9d9;
+}
+
+.placeholder-card .ant-btn:not(.ant-btn-primary):hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: #40a9ff;
+  color: #40a9ff;
+  transform: translateY(-1px);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .page-placeholder-container {
+    padding: 16px;
+  }
+  
+  .placeholder-card .ant-card-body {
+    padding: 32px 20px;
+  }
+  
+  .placeholder-card .ant-result-title {
+    font-size: 20px;
+  }
+  
+  .placeholder-card .ant-result-subtitle {
+    font-size: 14px;
+  }
+  
+  .placeholder-card .ant-btn {
+    width: 100%;
+    margin: 8px 0;
+  }
+  
+  .placeholder-card .ant-result-extra {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+/* 动画效果 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 自定义图标样式 */
+.placeholder-card .ant-result-icon {
+  margin-bottom: 24px;
+}
+
+.placeholder-card .ant-result-icon > .anticon {
+  font-size: 64px;
+  color: #1890ff;
+}
+
+/* 特殊状态颜色 */
+.placeholder-card.development .ant-result-icon > .anticon {
+  color: #faad14;
+}
+
+.placeholder-card.maintenance .ant-result-icon > .anticon {
+  color: #ff4d4f;
+}
+
+.placeholder-card.coming-soon .ant-result-icon > .anticon {
+  color: #52c41a;
+}
