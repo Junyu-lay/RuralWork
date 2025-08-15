@@ -124,7 +124,7 @@ const WelcomePage = () => {
           <div className="nav-left">
             <div className="system-logo">
               <UserOutlined className="logo-icon" />
-              <span className="system-name">童坊镇政务系统</span>
+              <span className="system-name">政务系统</span>
             </div>
           </div>
           <div className="nav-right">
