@@ -25,6 +25,8 @@ import { getAllUsers, getData } from '../../services/databaseService';
 import UserManagement from './components/UserManagement';
 import VoteManagement from './components/VoteManagement';
 import EvaluationManagement from './components/EvaluationManagement';
+import LeaveManagement from './components/LeaveManagement';
+import TeamEvaluationManagement from './components/TeamEvaluationManagement';
 import DataStatistics from './components/DataStatistics';
 import SystemLogs from './components/SystemLogs';
 import './styles.css';
@@ -97,6 +99,16 @@ const AdminPage = () => {
       key: 'evaluations',
       icon: <TrophyOutlined />,
       label: '年度互评'
+    },
+    {
+      key: 'leaves',
+      icon: <CalendarOutlined />,
+      label: '请假管理'
+    },
+    {
+      key: 'team-evaluation',
+      icon: <TeamOutlined />,
+      label: '工作队评分'
     },
     {
       key: 'statistics',
@@ -217,7 +229,9 @@ const AdminPage = () => {
     if (loading) {
       return (
         <div className="loading-container">
-          <Spin size="large" tip="加载中..." />
+          <Spin size="large">
+            <div style={{ paddingTop: 16, color: '#666' }}>加载中...</div>
+          </Spin>
         </div>
       );
     }
@@ -231,6 +245,10 @@ const AdminPage = () => {
         return <VoteManagement />;
       case 'evaluations':
         return <EvaluationManagement />;
+      case 'leaves':
+        return <LeaveManagement />;
+      case 'team-evaluation':
+        return <TeamEvaluationManagement />;
       case 'statistics':
         return <DataStatistics />;
       case 'logs':

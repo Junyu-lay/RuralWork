@@ -1,0 +1,9 @@
+.leave-page .ant-form-item {
+	max-width: 520px;
+}
+
+.leave-page .ant-card + .ant-card {
+	margin-top: 24px;
+}
+
+

@@ -9,6 +9,8 @@ import AdminPage from './pages/Admin';
 import VotingPage from './pages/Voting';
 import EvaluationPage from './pages/Evaluation';
 import PagePlaceholder from './components/PagePlaceholder';
+import LeavePage from './pages/Leave';
+import TeamEvaluationPage from './pages/TeamEvaluation';
 import './App.css';
 
 // 全局配置
@@ -57,8 +59,10 @@ const AppRoutes = () => {
       {/* 默认路由重定向到登录页 */}
       <Route path="/" element={<Navigate to="/login" replace />} />
       
-      {/* 登录页面 */}
-      <Route path="/login" element={<LoginPage />} />
+                {/* 登录页面 */}
+          <Route path="/login" element={<LoginPage />} />
+          
+          
       
       {/* 受保护的页面 */}
       <Route path="/welcome" element={
@@ -80,20 +84,14 @@ const AppRoutes = () => {
       } />
       <Route path="/leave" element={
         <ProtectedRoute>
-          <PagePlaceholder 
-            title="请假申请"
-            description="请假申请功能正在开发中，您可以提交和查看请假申请。"
-          />
+          <LeavePage />
         </ProtectedRoute>
       } />
-      <Route path="/team-evaluation" element={
-        <ProtectedRoute>
-          <PagePlaceholder 
-            title="工作队评分"
-            description="工作队评分功能正在开发中，站所可以对包村工作队进行评分。"
-          />
-        </ProtectedRoute>
-      } />
+                        <Route path="/team-evaluation" element={
+                    <ProtectedRoute>
+                      <TeamEvaluationPage />
+                    </ProtectedRoute>
+                  } />
       <Route path="/admin" element={
         <ProtectedRoute>
           <AdminPage />

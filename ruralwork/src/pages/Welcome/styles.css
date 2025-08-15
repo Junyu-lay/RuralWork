@@ -103,12 +103,12 @@
   left: 0;
   width: 100%;
   height: 100%;
-  /* background-image is now set via inline style in JSX */
+  /* 背景图片通过内联样式设置 */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-color: #4a90e2; /* 备用背景色，如果图片加载失败 */
-  z-index: -2;
+  z-index: 0;
 }
 
 .hero-pattern {
@@ -130,12 +130,12 @@
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.3);
-  z-index: -1;
+  z-index: 1;
 }
 
 .hero-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   max-width: 800px;
   margin: 0 auto;
   padding: 0 20px;
