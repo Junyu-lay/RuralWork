@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/RuralWork/static/css/main.26a77e19.css",
-    "main.js": "/RuralWork/static/js/main.3a3118a7.js",
+    "main.js": "/RuralWork/static/js/main.7549c168.js",
     "static/js/453.bd8c13f9.chunk.js": "/RuralWork/static/js/453.bd8c13f9.chunk.js",
     "static/media/jpg": "/RuralWork/static/media/3b7df72a022102a2ee30be25ea6bbe4c.36f6f72a247de329989e.jpg",
     "index.html": "/RuralWork/index.html",
     "main.26a77e19.css.map": "/RuralWork/static/css/main.26a77e19.css.map",
-    "main.3a3118a7.js.map": "/RuralWork/static/js/main.3a3118a7.js.map",
+    "main.7549c168.js.map": "/RuralWork/static/js/main.7549c168.js.map",
     "453.bd8c13f9.chunk.js.map": "/RuralWork/static/js/453.bd8c13f9.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.26a77e19.css",
-    "static/js/main.3a3118a7.js"
+    "static/js/main.7549c168.js"
   ]
 }
